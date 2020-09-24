@@ -45,6 +45,24 @@ class FusionCutter < Item
     end
 end
 
+class RedKeyCard < Item
+    def initialize
+        @name = "Red KeyCard"
+    end
+end
+
+class BlueKeyCard < Item
+    def initialize
+        @name = "Blue KeyCard"
+    end
+end
+
+class GreenKeyCard < Item
+    def initialize
+        @name = "Green KeyCard"
+    end
+end
+
 
 class Ship
 
@@ -65,6 +83,19 @@ class Ship
     end
 end
 
+class Room 
+
+    def initialize name
+        @name = name
+        @description = ""
+        @items = []
+    end
+
+    def look_around 
+        @description
+    end
+end
+
 
 puts "*" * 50
 puts "GIDEON"
@@ -72,12 +103,16 @@ puts "*" * 50
 
 puts "\nSkhsssssssssssssshhhh"
 puts "\nYou awaken with the sound of a pressurized seal being broken."
-puts "\nYou look around at the hibernation chamber you've awoken in. You see tubes and wires\n jutting out of 5 hibernation pods that look identical to the one you now sit in.\n They are closed. As you come to, you hear an alarm siren blaring and see flashing red \nlights. You see a door to the north, south, east, and west."
+puts "\nYou look around at the hibernation chamber you've awoken in. You see tubes and wires\n jutting out of 5 hibernation pods that look identical to the one you now sit in.\n They are closed. As you come to, you hear an alarm siren blaring and see flashing red \nlights. You see a door to the north, south, east, and west. The door to the \n north reads 'HALLWAY', the south reads 'ENGINE ROOM', the east reads 'MED BAY', and \nthe west reads 'CARGO HOLD'"
 
-puts "\nYou hear a familiar computer voice call out: \n \n 'User Detected. State your name:'\n"
+puts "\nYou hear a familiar computer voice call out: \n \n 'Lifeforce detected. State your name:'\n"
 player_name = gets.chomp
 player = Player.new(player_name) 
 new_ship = Ship.new
 
-puts "\n'Crewmember Detected. Hello, #{player.name}. Several mechanical failures detected. Please report to bridge for further instructions."
+puts "\n'Crewmember accepted. Hello, #{player.name}. Several mechanical failures detected. Please report to the BRIDGE for further instructions."
+
+puts "\nAction:" 
+player_action = gets.chomp
+
 
