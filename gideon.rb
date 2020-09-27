@@ -11,23 +11,23 @@ COMMROOM = ["HALLWAY", "PICK UP RED KEY CARD"]
 
 HALLWAY = ["ESCAPE PODS", "COMM ROOM", "MESS HALL", "HYBERNATION", "LOOK OUT THE WINDOWS"]
 
-ESCAPEPODS = ["HALLWAY", "USE CAPTAINS KEY"]
+ESCAPEPODS = ["HALLWAY"]
 
-LIVINGQ = ["MESS HALL"]
+LIVINGQ = ["MESS HALL", "GRAB LEVER"]
 
 MESSHALL = ["BRIDGE", "HALLWAY", "LIFE SUPPORT", "LIVING QUARTERS"]
 
 LIFESUPPORT = ["MESS HALL"]
 
-BRIDGE = ["MESS HALL", "*COMPUTER BRAIN*", "PICK UP BLUE KEY CARD"]
+BRIDGE = ["MESS HALL", "PICK UP BLUE KEY CARD"]
 
-COMPUTERBRAIN = ["BRIDGE", "CAPTAINS KEY"]
+COMPUTERBRAIN = ["BRIDGE", "PICK UP CAPTAINS KEY CARD"]
 
 INVENTORY = []
 
-ENGINE_STATE = "broken"
+$engine_on = false
 
-LIFESUPPORT_STATE = "broken"
+$life_support_on = false
 
 #######################STORY STARTS###########################
 
@@ -52,12 +52,16 @@ puts "\nPossible Actions: #{HYBERNATION.join(", ")}"
 
 def room_picker (player_action)
 
+    # HYBERNATION - starting room
+
     if player_action == "HYBERNATION"
         puts "\nYou see tubes and wires\n jutting out of 5 hibernation pods that look identical to the one you now sit in.\n They are closed. As you come to, you hear an alarm siren blaring and see flashing red \nlights. You see a door to the north, south, east, and west. The door to the \n north reads 'HALLWAY', the south reads 'ENGINE-ROOM', the east reads 'MED-BAY', and \nthe west reads 'CARGO-HOLD'"
         puts "\nPossible Actions: #{HYBERNATION.join(", ")}"
     
         player_action = gets.chomp.upcase
         room_picker(player_action) 
+
+    # HALLWAY - Possible actions - LOOK OUT THE WINDOWS
 
     elsif player_action == "HALLWAY" 
         puts "\nYou press the command button and the door slowly grinds open." 
@@ -75,6 +79,8 @@ def room_picker (player_action)
     
         player_action = gets.chomp.upcase
         room_picker(player_action)
+
+    # MED BAY - Possible actions - GRAB WRENCH
 
     elsif player_action == "MED BAY" 
         puts "\n You walk press the command button the door opens and you see a bunch of viles and tools spread out on the floor. Looks like no one has cleaned up in some time."
@@ -96,9 +102,11 @@ def room_picker (player_action)
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
+    # CARGO BAY - Possible Actions - GRAB FUSION TORCH
+
     elsif player_action == "CARGO BAY" 
         if INVENTORY.include?("BLUE KEY CARD")
-            puts "\n As you slide the keycard in, the door quickly glides open. You stand staring at a room with cargo boxes spread around. They appear locked. You see a fusion cutter on the floor."
+            puts "\n As you slide the keycard in, the door quickly glides open. You stand staring at a room with cargo boxes spread around. They appear locked. You see a fusion torch on the floor."
             puts "\n Possible Actions: #{CARGOBAY.join(", ")}"
         else 
             puts "\n You press the command button but error flashes on the panel. “Key Card Required” reads across the panel."
@@ -118,8 +126,10 @@ def room_picker (player_action)
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
+    # ENGINE ROOM - Possible Actions - FIX CRACK WITH FUSION TORCH
+
     elsif player_action == "ENGINE ROOM" 
-        if INVENTORY.include?("RED KEY CARD") && ENGINE_STATE == "broken"
+        if INVENTORY.include?("RED KEY CARD") && $engine_on == false
             puts "As you slide the keycard in, the door quickly glides open. You see a dark room with piping running from wall to wall. There seems to be a crack in one of the pipes. Steam is bursting from the pipe."
 
             if INVENTORY.include?("FUSION TORCH")
@@ -134,6 +144,7 @@ def room_picker (player_action)
 
         elsif INVENTORY.include?("RED KEY CARD")
             puts "You see the ENGINE ROOM, now fixed."
+            puts "\n Possible Actions: #{ENGINEROOM.join(", ")}"
 
             player_action = gets.chomp.upcase
             room_picker(player_action)
@@ -147,13 +158,18 @@ def room_picker (player_action)
         end
 
     elsif player_action == "FIX CRACK WITH FUSION TORCH"
-        ENGINE_STATE == "fixed"
+        $engine_on = true
         puts "\n After applying the fusion torch to the crack, the steam dissipates."
         ENGINEROOM.pop
+        if $engine_on == true && $life_support_on == true
+            puts "You hear the alarm's throughout the ship silence. It is now eerily quiet on the ship."
+        end
         puts "\n Possible Actions: #{ENGINEROOM.join(", ")}"
 
         player_action = gets.chomp.upcase
             room_picker(player_action)
+
+    # MESS HALL   
 
     elsif player_action == "MESS HALL"
         puts "\n You see a kitchen. Food is spilled all over the floor."
@@ -162,15 +178,28 @@ def room_picker (player_action)
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
+    # LIVING QUARTERS - Possible Actions - PICK UP LEVER
+
     elsif player_action == "LIVING QUARTERS"
-        puts "\n You see six seperate bunks. There is a card table with playing cards on it."
+        puts "\n You see six seperate bunks. There is a card table with playing cards on it. There appears to be a bloody lever in on of the bunks."
         puts "\n Possible Actions: #{LIVINGQ.join(", ")}"
     
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
+    elsif player_action == "GRAB LEVER"
+        INVENTORY << "LEVER"
+        puts "\n Inventory: #{INVENTORY}"
+        LIVINGQ.pop
+        puts "\n Possible Actions: #{LIVINGQ.join(", ")}"
+
+        player_action = gets.chomp.upcase
+        room_picker(player_action)
+
+    # LIFE SUPPORT - Possible Actions - TURN VALVE WITH WRENCH
+
     elsif player_action == "LIFE SUPPORT"
-        if LIFESUPPORT_STATE == "broken"  
+        if $life_support_on == false
             puts "\n You see tubes with colored liquids around the room. A red light flashes. You see a valve that appears to have come loose. The handle is nowhere to be seen."
             if INVENTORY.include?("WRENCH")
                 LIFESUPPORT << "TURN VALVE WITH WRENCH"
@@ -188,6 +217,7 @@ def room_picker (player_action)
             end
         else 
             puts "You see the LIFE SUPPORT room, now fixed."
+            puts "\n Possible Actions: #{LIFESUPPORT.join(", ")}"
 
             player_action = gets.chomp.upcase
             room_picker(player_action)
@@ -196,13 +226,19 @@ def room_picker (player_action)
 
      
     elsif player_action == "TURN VALVE WITH WRENCH"
-        LIFESUPPORT_STATE == "fixed"
+        $life_support_on = true
         puts "\n After turning the handle-less valve with the wrench, the lights return to normal."
-        ENGINEROOM.pop
-        puts "\n Possible Actions: #{ENGINEROOM.join(", ")}"
+        LIFESUPPORT.pop
+        puts "\n Possible Actions: #{LIFESUPPORT.join(", ")}"
+        if $engine_on == true && $life_support_on == true
+            puts "You hear the alarm's throughout the ship silence. It is now eerily quiet on the ship."
+        end
+        
 
         player_action = gets.chomp.upcase
             room_picker(player_action)    
+
+    # COMM ROOM - Possible Actions - PICK UP RED KEY CARD
 
     elsif player_action == "COMM ROOM"
         puts "\n You see a room with computer panels lining one of the walls. The panels are smoking and look destroyed. There seems to have been some sort of explosion."
@@ -224,12 +260,23 @@ def room_picker (player_action)
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
+    # BRIDGE - Possible Actions - PICK UP BLUE KEY CARD, ENTER COMPUTER BRAIN
+
     elsif player_action == "BRIDGE"
         puts "\n You see large panels with instruments, knobs, and buttons. You wonder where the Captain is."
-        puts "\n Possible Actions: #{BRIDGE.join(", ")}"
+        if INVENTORY.include?("LEVER")
+            BRIDGE << "INSERT LEVER INTO PANEL AND PULL"
+            puts "\n Possible Actions: #{BRIDGE.join(", ")}"
+
+            player_action = gets.chomp.upcase
+            room_picker(player_action)
+        
+        else
+            puts "\n Possible Actions: #{BRIDGE.join(", ")}"
     
-        player_action = gets.chomp.upcase
-        room_picker(player_action)
+            player_action = gets.chomp.upcase
+            room_picker(player_action)
+        end
 
     elsif player_action == "PICK UP BLUE KEY CARD"
         INVENTORY << "BLUE KEY CARD"
@@ -241,13 +288,51 @@ def room_picker (player_action)
         player_action = gets.chomp.upcase
         room_picker(player_action)
 
-    elsif player_action == "ESCAPE PODS"
-        puts "\n You see two escape pods locked in place. You know you need the Captains Key card, but where is he?"
-        puts "\n Possible Actions: #{ESCAPEPODS.join(", ")}"
+    elsif player_action == "INSERT LEVER INTO PANEL AND PULL"
+        BRIDGE.pop
+        puts "You see a portion of the floor open up. You can see a staircase leading down"
+        BRIDGE << "COMPUTER BRAIN"
+        puts "\n Possible Actions: #{BRIDGE.join(", ")}"
 
         player_action = gets.chomp.upcase
         room_picker(player_action)
-    
+
+    # COMPUTER BRAIN
+
+    elsif player_action == "COMPUTER BRAIN"
+        puts "\n You follow the narrow stairs down into the bowels of the ship. Circuitry and wiring line the walls. You follow the hardware to the computers central hub."
+        puts "\n Possible Actions: #{COMPUTERBRAIN.join(", ")}"
+
+        player_action = gets.chomp.upcase
+        room_picker(player_action)
+
+    elsif player_action == "PICK UP CAPTAINS KEY CARD"
+        INVENTORY << "CAPTAINS KEY CARD"
+        puts "\n Inventory: #{INVENTORY}"
+        COMPUTERBRAIN.pop
+        puts "\n Possible Actions: #{COMPUTERBRAIN.join(", ")}"
+
+        player_action = gets.chomp.upcase
+        room_picker(player_action) 
+
+    # ESCAPE PODS - Possible Actions - USE CAPTAIN'S KEY CARD
+
+    elsif player_action == "ESCAPE PODS"
+        puts "\n You see two escape pods locked in place."
+        if INVENTORY.include?("CAPTAINS KEY CARD")
+            BRIDGE << "INSERT CAPTAINS KEY CARD"
+            puts "\n Possible Actions: #{ESCAPEPODS.join(", ")}"
+
+            player_action = gets.chomp.upcase
+            room_picker(player_action)
+
+        else
+            puts "\n Possible Actions: #{ESCAPEPODS.join(", ")}"
+
+            player_action = gets.chomp.upcase
+            room_picker(player_action)
+        end
+
     else 
         puts "\nInvalid Action. Try Again!"
 
