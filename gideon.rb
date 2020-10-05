@@ -35,7 +35,7 @@ puts "*" * 50
 puts "GIDEON"
 puts "*" * 50
 
-puts "\nSkhsssssssssssssshhhh"
+puts "\nSkhssssssssssssshhhh"
 puts "\nYou awaken with the sound of a pressurized seal being broken."
 puts "\nYou look around at the hibernation chamber you've awoken in. You see tubes and wires\n jutting out of 5 hibernation pods that look identical to the one you now sit in.\n They are closed. As you come to, you hear an alarm siren blaring and see flashing red \nlights. You see a door to the north, south, east, and west. The door to the \n north reads 'HALLWAY', the south reads 'ENGINE ROOM', the east reads 'MED BAY', and \nthe west reads 'CARGO BAY'"
 
